@@ -15,8 +15,8 @@ def form_p_square(chars, columns, rows):
     p_square = [["" for i in range(columns)] for j in range(rows)]
     for i, char in enumerate(chars):
         # Определяется номер строки и столбца, в которые должен быть помещен символ
-        num_row = i // columns
-        num_column = i % columns
+        num_row = i // columns - 1
+        num_column = i % columns - 1
         # Символ помещается в данную позицию
         p_square[num_row][num_column] = char
     return p_square
@@ -43,7 +43,8 @@ def encode(p_square, string):
         raw_char_pos = find_char(p_square, raw_char)
         # Если позиция не была корректно обнаружена, это означает, что пользователь ввел недопустимый символ
         if raw_char_pos == -1:
-            raise Exception("Вы ввели символ, который невозможно закодировать!")
+            message = f"Вы ввели символ '{raw_char}', который невозможно закодировать!"
+            raise Exception(message)
         raw_row, raw_column = raw_char_pos
         # Если строка, в которой был обнаружен исходный символ, является
         # последней - для шифрования берется символ из первой строки
@@ -88,17 +89,21 @@ def decode(p_square, string):
 
 # Главная функция программы
 def main():
-    # В качестве допустимых для шифрования символов используются все строчные буквы русского алфавита и три спец.символа
-    russian_alphabet = 'абвгдеёжзиклмнопрстуфхцчшщъыьэюя'
-    special_symbols = ',. '
-    chars = russian_alphabet + special_symbols
+    # В качестве допустимых для шифрования символов используются все строчные буквы русского алфавита
+    # цифры и три спец.символа
+    russian_alphabet = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'
+    special_symbols = ' ,.!?'
+    numbers = '1234567890'
+    chars = russian_alphabet + numbers + special_symbols
     chars = [char for char in chars]
+    print(f"zhopa {len(chars)}")
     # Символы перемешиваются
     random.shuffle(chars)
 
     # При имеющимся фиксированном количестве столбцов, подсчитывается необходимое количество строк
-    COLUMNS = 7
-    ROWS = math.floor(len(chars) / COLUMNS)
+    COLUMNS = 6
+    ROWS = math.ceil(len(chars) / COLUMNS)
+    print(f"columns {COLUMNS}, rows {ROWS}")
     # Формируется полибианский квадрат
     p_square = form_p_square(chars, COLUMNS, ROWS)
     pretty_print(p_square)
